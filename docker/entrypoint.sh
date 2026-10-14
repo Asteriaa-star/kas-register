@@ -2,9 +2,23 @@
 set -e
 cd /app
 
+# 0. Set APP_URL otomatis dari URL platform (Render menyediakannya)
+if [ -z "$APP_URL" ] && [ -n "$RENDER_EXTERNAL_URL" ]; then
+  export APP_URL="$RENDER_EXTERNAL_URL"
+fi
+
 # 1. App key (kalau belum diset lewat env)
 if [ -z "$APP_KEY" ]; then
   php artisan key:generate --force
+fi
+
+# 1b. Fallback: kalau DB_URL (Postgres) belum diisi, pakai SQLite sementara
+#     supaya deploy pertama tetap berhasil.
+if [ -z "$DB_URL" ]; then
+  echo "DB_URL kosong -> memakai SQLite sementara."
+  export DB_CONNECTION=sqlite
+  export DB_DATABASE=/app/database/database.sqlite
+  touch "$DB_DATABASE"
 fi
 
 # 2. Optimasi konfigurasi
