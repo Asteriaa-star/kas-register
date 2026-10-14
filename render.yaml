@@ -19,11 +19,10 @@ services:
         value: id
       - key: LOG_CHANNEL
         value: stderr
-      # Database PostgreSQL (Neon gratis). Kosongkan = pakai SQLite sementara.
+      # Database: kalau DB_URL diisi (Postgres Neon) dipakai; kalau kosong,
+      # otomatis memakai SQLite sementara supaya deploy tetap berhasil.
       - key: DB_CONNECTION
         value: pgsql
-      - key: DB_URL
-        sync: false
       - key: SESSION_DRIVER
         value: database
       - key: CACHE_STORE
